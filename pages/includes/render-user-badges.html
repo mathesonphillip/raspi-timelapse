@@ -1,0 +1,89 @@
+<div class="row">
+    <div class="col-lg-12">
+        <h1 class="page-header">Render User Badges</h1>
+    </div>
+    <!-- /.col-lg-12 -->
+</div>
+
+<div class="allBadges"></div>
+
+<script type="text/javascript">
+
+getAllBadges();
+
+function getAllBadges(){
+    var result
+    $.ajax({
+        url: "https://x0cqlc5za2.execute-api.ap-southeast-2.amazonaws.com/dev/badges/",
+        success: function (data) {
+            console.log('getFocusBadges success');
+            //randomise order?
+            //data = sortPriority(data);
+            renderUserBadges(data)
+        },
+        error: function (data) {
+            console.log('getFocusBadges error');
+        }
+    });
+}
+
+function renderUserBadges(allBadges, userBadges){
+    var userBadges = {};
+    var allBadges = {};
+    var html = [];
+    $.ajax({
+        url: "https://x0cqlc5za2.execute-api.ap-southeast-2.amazonaws.com/dev/userAssertions/" + loggedInUserId,
+        type: "GET",
+        contentType: 'application/json',
+        dataType: "json",
+        processData: false,
+        complete: function(userBadges){
+            $.ajax({
+                url: "https://x0cqlc5za2.execute-api.ap-southeast-2.amazonaws.com/dev/badges/",
+                type: "GET",
+                contentType: 'application/json',
+                dataType: "json",
+                processData: false,
+                complete: function(allBadges){
+                    userBadges = userBadges.responseJSON
+                    allBadges = allBadges.responseJSON
+                    userBadgesBadgeId = []
+                    allBadgesBadgeId = []
+
+                    for (var i = userBadges.length - 1; i >= 0; i--) {
+                        userBadgesBadgeId.push(userBadges[i].badgeId)
+                    }
+                    for (var i = allBadges.length - 1; i >= 0; i--) {
+                        index = $.inArray(allBadges[i].badgeId, userBadgesBadgeId);
+                        console.log(index)
+                        if (index >= 0) {
+                            panelClass='panel-green';
+                        }
+                        else {
+                            panelClass='panel-yellow';
+                        }
+                        html.push(`
+                            <div class="col-lg-3">
+                                <div class="panel `+panelClass+`">
+
+                                    <div class="panel-heading">
+                                        <i class="fa fa-tag fa-1x"></i>
+                                        ` + allBadges[i].badgeId.substring(0, 10) + `
+                                    </div>
+
+                                    <div class="panel-body">
+                                        <img src="../images/badges/128/` + allBadges[i].badgeId + `.png" class="img-responsive backup_picture_256 center-block clickable_badge" onerror="imgError(this, 128);" alt=`+allBadges[i].badgeId+`>
+                                    </div>
+                                </div>
+                            </div>`
+                        )
+                    }
+                    $(".allBadges").append(html);
+                }
+            })
+        }
+    })
+}
+
+
+</script>

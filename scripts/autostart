@@ -1,5 +1,0 @@
-@lxpanel --profile LXDE-pi
-@pcmanfm --desktop --profile LXDE-pi
-@xscreensaver -no-splash
-@lxterminal --command="python /home/pi/timelapse/scripts/photoPi.py"
-@/usr/bin/python /home/pi/timelapse/scripts/photoPi.py

@@ -1,0 +1,13 @@
+Step 1: Navigate to HDD by 
+> cd /media/doug/Seagate\ Expansion\ Drive/
+> cd ./[ProjectFolderName]
+
+Step 2: Create text file with all files listed 
+> ls *.jpg > stills.txt
+
+Step 3: Run mencoder to stitch the files together 
+> mencoder -nosound -ovc lavc -lavcopts vcodec=mpeg4:aspect=16/9:vbitrate=8000000 -vf scale=1920:1080 -o timelapse.avi -mf type=jpeg:fps=14 mf://@stills.txt
+
+
+d
+4 mins for 757 Photos at 5 frames per second
